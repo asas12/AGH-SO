@@ -1,0 +1,5 @@
+5	4	10	tad.txt	40	1	0	10
+P	K	N	f_name	L	s_mode	i_mode	NK
+					0-shorter0-norm
+					1-exact	1-verbose
+					2-longer

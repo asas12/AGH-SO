@@ -1,0 +1,4 @@
+cat zad1.c | grep incl | grep st
+echo ala
+
+ps -aux |  hd -n 10

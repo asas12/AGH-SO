@@ -1,0 +1,24 @@
+No of threads: 1. Filter size: 3x3.
+Took 0.099013 seconds.Done.
+No of threads: 2. Filter size: 3x3.
+Took 0.049749 seconds.Done.
+No of threads: 4. Filter size: 3x3.
+Took 0.023821 seconds.Done.
+No of threads: 8. Filter size: 3x3.
+Took 0.028628 seconds.Done.
+No of threads: 1. Filter size: 30x30.
+Took 9.868577 seconds.Done.
+No of threads: 2. Filter size: 30x30.
+Took 4.879484 seconds.Done.
+No of threads: 4. Filter size: 30x30.
+Took 2.510064 seconds.Done.
+No of threads: 8. Filter size: 30x30.
+Took 2.648049 seconds.Done.
+No of threads: 1. Filter size: 60x60.
+Took 40.145465 seconds.Done.
+No of threads: 2. Filter size: 60x60.
+Took 20.168669 seconds.Done.
+No of threads: 4. Filter size: 60x60.
+Took 10.349671 seconds.Done.
+No of threads: 8. Filter size: 60x60.
+Took 10.757261 seconds.Done.

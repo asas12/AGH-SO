@@ -1,0 +1,96 @@
+Copying with system functions 100000 records with size 4
+  User: 0.204703s
+  System: 1.900929s
+Copying with system functions 50000 records with size 512
+  User: 0.96969s
+  System: 1.226040s
+Copying with system functions 50000 records with size 4096
+  User: 0.197569s
+  System: 2.680033s
+Copying with system functions 50000 records with size 8192
+  User: 0.186121s
+  System: 4.650736s
+Copying with system functions 100000 records with size 4
+  User: 0.219325s
+  System: 1.875998s
+Copying with system functions 50000 records with size 512
+  User: 0.93537s
+  System: 1.161403s
+Copying with system functions 50000 records with size 4096
+  User: 0.153735s
+  System: 2.603241s
+Copying with system functions 50000 records with size 8192
+  User: 0.198574s
+  System: 4.616520s
+Copying with library functions 1000000 records with size 4
+  User: 0.428581s
+  System: 0.103942s
+Copying with library functions 100000 records with size 512
+  User: 0.167456s
+  System: 0.625527s
+Copying with library functions 50000 records with size 4096
+  User: 0.313290s
+  System: 2.578884s
+Copying with library functions 50000 records with size 8192
+  User: 0.454440s
+  System: 5.112144s
+Copying with library functions 1000000 records with size 4
+  User: 0.402932s
+  System: 0.96448s
+Copying with library functions 100000 records with size 512
+  User: 0.127638s
+  System: 0.660354s
+Copying with library functions 50000 records with size 4096
+  User: 0.270359s
+  System: 2.600462s
+Copying with library functions 50000 records with size 8192
+  User: 0.374110s
+  System: 5.533806s
+Sorting with system functions 2000 records with size 4
+  User: 4.589980s
+  System: 28.477521s
+Sorting with system functions 500 records with size 512
+  User: 0.360724s
+  System: 1.984274s
+Sorting with system functions 500 records with size 4096
+  User: 0.416795s
+  System: 3.43470s
+Sorting with system functions 500 records with size 8192
+  User: 0.499121s
+  System: 5.673807s
+Sorting with system functions 2000 records with size 4
+  User: 4.813033s
+  System: 27.994879s
+Sorting with system functions 500 records with size 512
+  User: 0.369536s
+  System: 1.958563s
+Sorting with system functions 500 records with size 4096
+  User: 0.520289s
+  System: 2.903527s
+Sorting with system functions 500 records with size 8192
+  User: 0.492827s
+  System: 5.589401s
+Sorting with library functions 2000 records with size 4
+  User: 6.877771s
+  System: 17.787055s
+Sorting with library functions 1000 records with size 512
+  User: 2.212240s
+  System: 5.725935s
+Sorting with library functions 500 records with size 4096
+  User: 0.848826s
+  System: 2.894959s
+Sorting with library functions 500 records with size 8192
+  User: 1.133258s
+  System: 5.687895s
+Sorting with library functions 2000 records with size 4
+  User: 6.763504s
+  System: 18.242176s
+Sorting with library functions 500 records with size 512
+  User: 0.530668s
+  System: 1.468913s
+Sorting with library functions 100 records with size 4096
+  User: 0.29268s
+  System: 0.122100s
+Sorting with library functions 100 records with size 8192
+  User: 0.69940s
+  System: 0.224441s

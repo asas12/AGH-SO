@@ -1,0 +1,2 @@
+cat zad1.c | grep incl | grep st
+cat zad1.c | grep incl | grep st

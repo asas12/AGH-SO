@@ -1,0 +1,12 @@
+  Creating dynamic array:
+    User: 0.0s
+    System: 0.0s
+    Real 0.s
+  Searching block at 10 index:
+    User: 0.3s
+    System: 0.0s
+    Real 0.47s
+  Adding and removing 15 times:
+    User: 0.6s
+    System: 0.0s
+    Real 0.54s

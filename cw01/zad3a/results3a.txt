@@ -1,0 +1,92 @@
+Porównanie między czasami wykonywania tych samych algorytmów dla bibliotek ladowanych w różny sposób do programu.
+Niestety nie udalo mi się w żadnym pomiarze zmierzyc czasu systemowego,
+ prawdopodobnie dlatego że jedynie "przekazanie" wolnej pamięci użytkownikowi wykorzystuje czas systemowy.
+Tablica statyczna znacznie szybciej stwarzana jest za pomoca dynamicznie ladowanej biblioteki.
+Z drugiej strony jednak usuwanie i wypelnianie komorek tablicy jest wolniejsze dla takiej biblioteki,
+ szukanie elementów jest dla niej z kolei nieiele szysze.
+
+Dla tablicy dynamicznej czasy sa podobne, niezależnie od sposobu linkowania biblioteki.
+Jedynie wyszukiwanie elementów wykonuje się niewiele szybciej dla DLL.
+
+Niestety nie mam pewności czy dobrze zmierzylem wyniki,
+ a duże rozbieżności podczas testów nie pozwalaja miec do nich zbyt dużego zaufania i wyciagac definitywnych wnioskow.
+
+Dynamic library:
+  Creating static array:
+    User: 1.325850s
+    System: 0.0s
+    Real 1.464695s
+  Adding and removing 1500 times:
+    User: 0.615s
+    System: 0.0s
+    Real 0.618s
+  Searching block at 230 index:
+    User: 1.418467s
+    System: 0.0s
+    Real 1.425488s
+Static library:
+  Creating static array:
+    User: 2.946263s
+    System: 0.0s
+    Real 3.130120s
+  Adding and removing 1500 times:
+    User: 0.213s
+    System: 0.0s
+    Real 0.217s
+  Searching block at 230 index:
+    User: 1.602172s
+    System: 0.0s
+    Real 1.605238s
+Shared library:
+  Creating static array:
+    User: 2.979994s
+    System: 0.0s
+    Real 3.138749s
+  Adding and removing 1500 times:
+    User: 0.212s
+    System: 0.0s
+    Real 0.221s
+  Searching block at 230 index:
+    User: 1.599764s
+    System: 0.0s
+    Real 1.606880s
+
+Shared library:
+  Creating dynamic array:
+    User: 0.40s
+    System: 0.0s
+    Real 0.53s
+  Adding and removing 1500 times:
+    User: 0.197863s
+    System: 0.0s
+    Real 0.198103s
+  Searching block at 230 index:
+    User: 0.609466s
+    System: 0.0s
+    Real 0.610117s
+Dynamic library:
+  Creating dynamic array:
+    User: 0.47773s
+    System: 0.0s
+    Real 0.52863s
+  Adding and removing 1500 times:
+    User: 0.198127s
+    System: 0.0s
+    Real 0.198376s
+  Searching block at 230 index:
+    User: 0.553168s
+    System: 0.0s
+    Real 0.553768s
+Static library:
+  Creating dynamic array:
+    User: 0.49s
+    System: 0.0s
+    Real 0.54s
+  Adding and removing 1500 times:
+    User: 0.198208s
+    System: 0.0s
+    Real 0.198450s
+  Searching block at 230 index:
+    User: 0.609769s
+    System: 0.0s
+    Real 0.610426s

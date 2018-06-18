@@ -1,0 +1,5 @@
+ls -al
+ls
+mkdir ala
+ls
+./prog

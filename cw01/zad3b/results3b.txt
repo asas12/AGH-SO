@@ -1,0 +1,127 @@
+Porównanie między czasami wykonywania tych samych algorytmów skompilowanych na różnych poziomach optymalizacji.
+
+Widac, że dla wyższych stopni optymalizacji czasy faktycznie ulegaja w większości skróceniu. Największe różnice widac jednak w czasie użytkownika,
+a nie w czasie rzeczywistym. Byc może wynika to z obciażenia komputera innymi programami w trakcie wykonywania testu.
+
+
+Static library -O:
+  Creating dynamic array:
+    User: 0.17s
+    System: 0.0s
+    Real 0.21s
+  Adding and removing 1500 times:
+    User: 0.201434s
+    System: 0.0s
+    Real 0.202382s
+  Searching block at 230 index:
+    User: 0.616009s
+    System: 0.0s
+    Real 0.618323s
+Shared library -O:
+  Creating dynamic array:
+    User: 0.11s
+    System: 0.0s
+    Real 0.21s
+  Adding and removing 1500 times:
+    User: 0.198901s
+    System: 0.0s
+    Real 0.203114s
+  Searching block at 230 index:
+    User: 0.647534s
+    System: 0.0s
+    Real 0.648736s
+Dynamic library -O:
+  Creating dynamic array:
+    User: 0.15s
+    System: 0.0s
+    Real 0.20s
+  Adding and removing 1500 times:
+    User: 0.199385s
+    System: 0.0s
+    Real 0.203387s
+  Searching block at 230 index:
+    User: 0.199s
+    System: 0.0s
+    Real 0.203s
+
+Static library -O2:
+  Creating dynamic array:
+    User: 0.13s
+    System: 0.0s
+    Real 0.21s
+  Adding and removing 1500 times:
+    User: 0.199450s
+    System: 0.0s
+    Real 0.201797s
+  Searching block at 230 index:
+    User: 0.607865s
+    System: 0.0s
+    Real 0.608538s
+Dynamic library -O2:
+  Creating dynamic array:
+    User: 0.19s
+    System: 0.0s
+    Real 0.21s
+  Adding and removing 1500 times:
+    User: 0.199393s
+    System: 0.0s
+    Real 0.203039s
+  Searching block at 230 index:
+    User: 0.199s
+    System: 0.0s
+    Real 0.203s
+Shared library -O2:
+  Creating dynamic array:
+    User: 0.14s
+    System: 0.0s
+    Real 0.20s
+  Adding and removing 1500 times:
+    User: 0.201626s
+    System: 0.0s
+    Real 0.205959s
+  Searching block at 230 index:
+    User: 0.630208s
+    System: 0.0s
+    Real 0.631334s
+
+
+Dynamic library -O3:
+  Creating dynamic array:
+    User: 0.10s
+    System: 0.0s
+    Real 0.19s
+  Adding and removing 1500 times:
+    User: 0.200040s
+    System: 0.0s
+    Real 0.200340s
+  Searching block at 230 index:
+    User: 0.200s
+    System: 0.0s
+    Real 0.200s
+Shared library -O3:
+  Creating dynamic array:
+    User: 0.15s
+    System: 0.0s
+    Real 0.20s
+  Adding and removing 1500 times:
+    User: 0.200033s
+    System: 0.0s
+    Real 0.200763s
+  Searching block at 230 index:
+    User: 0.608370s
+    System: 0.0s
+    Real 0.610755s
+Static library -O3:
+  Creating dynamic array:
+    User: 0.14s
+    System: 0.0s
+    Real 0.23s
+  Adding and removing 1500 times:
+    User: 0.200345s
+    System: 0.0s
+    Real 0.200621s
+  Searching block at 230 index:
+    User: 0.606251s
+    System: 0.0s
+    Real 0.611097s
+
