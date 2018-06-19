@@ -1,5 +1,6 @@
 #define _XOPEN_SOURCE 500
 #define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -17,11 +18,11 @@
 #include <sys/shm.h>
 #include "ipcutil.h"
 
-int stringToInt(char* s){
+int stringToInt(char *s) {
     int result = 0;
-    for(int i=0; i<strlen(s); i++){
-        result*=10;
-        result+=(s[i]-'0');
+    for (int i = 0; i < strlen(s); i++) {
+        result *= 10;
+        result += (s[i] - '0');
     }
     return result;
 }
@@ -29,14 +30,14 @@ int stringToInt(char* s){
 //resources
 int msqID;
 int semID;
-int* shmAddr;
+int *shmAddr;
 int shmID;
 struct timespec tp;
 pid_t myPID;
 struct sembuf recMsgSem;
 struct sembuf sendMsgSem;
 
-void closeRes(void){
+void closeRes(void) {
     //closing queue
     msgctl(msqID, IPC_RMID, NULL);
     //closing semaphore
@@ -46,25 +47,25 @@ void closeRes(void){
     shmctl(shmID, IPC_RMID, NULL);
 }
 
-void catchSIGINT(int signo){
+void catchSIGINT(int signo) {
     printf("\nOdebrano sygnal SIGINT\n");
-    SERVER_STOP=1;
+    SERVER_STOP = 1;
     closeRes();
     exit(0);
 }
 
-void catchSIGTERM(int signo){
+void catchSIGTERM(int signo) {
     printf("Odebrano sygnal SIGTERM\n");
-    SERVER_STOP=1;
+    SERVER_STOP = 1;
     closeRes();
     exit(0);
 }
 
-void catchSIGUSR1(int signo){
+void catchSIGUSR1(int signo) {
     printf("\nOdebrano sygnal SIGUSR1\n");
 }
 
-void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext){
+void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext) {
     clock_gettime(CLOCK_MONOTONIC, &tp);
     printf("%d.%ld\tI was woken up.\n", (int) tp.tv_sec, tp.tv_nsec);
 
@@ -86,7 +87,7 @@ void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext){
 
     //waiting for him to take a seat
     //sigwait(&sigmask, &sig);
-    recMsgSem.sem_op=-1;
+    recMsgSem.sem_op = -1;
     semop(semID, &recMsgSem, 1);
 
 
@@ -104,13 +105,13 @@ void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext){
     //waiting for client to leave SIGUSR1???
 
     //sigwait(&sigmask, &sig);
-    recMsgSem.sem_op=-1;
+    recMsgSem.sem_op = -1;
     semop(semID, &recMsgSem, 1);
 }
 
-int main(int argc, char* argv[]){
+int main(int argc, char *argv[]) {
 
-    if (argc!=2){
+    if (argc != 2) {
         printf("Wrong number of arguments!\n");
         return 1;
     }
@@ -133,8 +134,8 @@ int main(int argc, char* argv[]){
 
 
 //creating public queue
-    const char* homePath;
-    if((homePath = getenv("HOME")) == NULL){
+    const char *homePath;
+    if ((homePath = getenv("HOME")) == NULL) {
         printf("Can't get gome variable.\n");
     }
     key_t myKey = ftok(homePath, PROJECT_NO);
@@ -166,7 +167,7 @@ int main(int argc, char* argv[]){
     sendMsgSem.sem_flg = 0;
 
 //creating shared memory
-    shmID = shmget(myKey, 3*sizeof(semID)+sizeof(myPID), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
+    shmID = shmget(myKey, 3 * sizeof(semID) + sizeof(myPID), IPC_CREAT | IPC_EXCL | S_IRUSR | S_IWUSR);
     shmAddr = (int *) shmat(shmID, NULL, 0);
 
     shmAddr[0] = 1; //awake
@@ -176,14 +177,14 @@ int main(int argc, char* argv[]){
 
     struct myMsgBuf recMsg;
 
-    while(1){
+    while (1) {
         //lock FIFO and shm
-        sem.sem_op=-1;
+        sem.sem_op = -1;
         semop(semID, &sem, 1);
 
         //check if anyone is waiting
         int k = (int) msgrcv(msqID, &recMsg, MAX_MSG_SIZE, 0, IPC_NOWAIT);
-        if(k>0) {
+        if (k > 0) {
             int sig;
 
             //one less client in queue
@@ -212,7 +213,7 @@ int main(int argc, char* argv[]){
             printf("%d.%ld\tShaving client %d.\n", (int) tp.tv_sec, tp.tv_nsec, recMsg.pid);
 
             //unlocking FIFO and shm
-            sem.sem_op=1;
+            sem.sem_op = 1;
             semop(semID, &sem, 1);
 
             //shaving itself:
@@ -229,8 +230,7 @@ int main(int argc, char* argv[]){
             recMsgSem.sem_op = -1;
             semop(semID, &recMsgSem, 1);
 
-        }
-        else{
+        } else {
             //go to sleep - no one in the queue
             clock_gettime(CLOCK_MONOTONIC, &tp);
             printf("%d.%ld\tGoing to sleep.\n", (int) tp.tv_sec, tp.tv_nsec);
@@ -239,12 +239,11 @@ int main(int argc, char* argv[]){
             shmAddr[0] = 0;
 
             //open FIFO nad shm
-            sem.sem_op=1;
+            sem.sem_op = 1;
             semop(semID, &sem, 1);
 
             //don't do anything while asleep!
-            while(!shmAddr[0]){
-                ;
+            while (!shmAddr[0]) { ;
             }
 
         }

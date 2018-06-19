@@ -20,13 +20,13 @@ int SERVER_STOP;
 int CLIENT_STOP;
 
 
-struct myMsgBuf{
+struct myMsgBuf {
     long mType;
     pid_t pid;
     char msg[MAX_MSG_SIZE];
 };
 
-union semun{
+union semun {
     int val;
     struct semid_ds *buf;
     unsigned short *array;

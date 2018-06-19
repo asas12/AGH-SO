@@ -1,5 +1,6 @@
 #define _XOPEN_SOURCE 500
 #define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -28,33 +29,32 @@ sem_t clients_list_lock;
 struct sockaddr_in socket_net;
 
 
-int stringToInt(char* s){
+int stringToInt(char *s) {
     int result = 0;
-    for(int i=0; i<strlen(s); i++){
-        result*=10;
-        result+=(s[i]-'0');
+    for (int i = 0; i < strlen(s); i++) {
+        result *= 10;
+        result += (s[i] - '0');
     }
     return result;
 }
 
 
-
-void close_sems(void){
+void close_sems(void) {
     sem_destroy(&clients_list_lock);
 }
 
-void* IO_start_routine(void* p){
+void *IO_start_routine(void *p) {
 
-    if(pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL)!=0)printf("err\n");
-    if(pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL)!=0){printf("err2\n");};
+    if (pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL) != 0)printf("err\n");
+    if (pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL) != 0) { printf("err2\n"); };
 
-    while(1) {
+    while (1) {
 
         sem_wait(&write_lock);
 
         sem_wait(&buffer_lock[writing_pos]);
 
-        while(global_buffer[writing_pos]!=NULL){
+        while (global_buffer[writing_pos] != NULL) {
             //if(info_mode)
             //printf("Buffer is full");
             sem_post(&buffer_lock[writing_pos]);
@@ -67,8 +67,9 @@ void* IO_start_routine(void* p){
         size_t read_len = MAX_LINE_LENGTH;
         ssize_t rc = getline(&line_buf, &read_len, file_to_read);
         if (rc != -1) {
-            if(info_mode)
-                printf("I am %ld and I read line %d into buf cell %d: %s", pthread_self(),line_nr, writing_pos, line_buf);
+            if (info_mode)
+                printf("I am %ld and I read line %d into buf cell %d: %s", pthread_self(), line_nr, writing_pos,
+                       line_buf);
 
             global_buffer[writing_pos] = line_buf;
 
@@ -91,7 +92,7 @@ void* IO_start_routine(void* p){
 
             sem_post(&write_lock);
 
-            if(!NK)
+            if (!NK)
                 end_time = 1;
 
             return (&P);
@@ -100,20 +101,20 @@ void* IO_start_routine(void* p){
 
 }
 
-void* com_start_routine(void* p) {
+void *com_start_routine(void *p) {
 
 }
 
-void* ping_start_routine(void* p){
+void *ping_start_routine(void *p) {
 
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
 
-    if(info_mode)
+    if (info_mode)
         printf("I am consumer no: %ld.\n", pthread_self());
 
 
-    while(1) {
+    while (1) {
 
         sem_wait(&read_lock);
         //printf("got read lock\n");
@@ -123,7 +124,7 @@ void* ping_start_routine(void* p){
             //if(info_mode)
             //printf("Buffer is empty\n");
             if (end_time) {
-                if(info_mode)
+                if (info_mode)
                     printf("Time to end, %ld.\n", pthread_self());
                 sem_post(&buffer_lock[reading_pos]);
                 sem_post(&read_lock);
@@ -133,18 +134,19 @@ void* ping_start_routine(void* p){
             sem_wait(&someone_is_writing);
             sem_wait(&buffer_lock[reading_pos]);
         }
-        if(info_mode)
-            printf("I am %ld and I read line from buf cell %d: %s", pthread_self(), reading_pos, global_buffer[reading_pos]);
+        if (info_mode)
+            printf("I am %ld and I read line from buf cell %d: %s", pthread_self(), reading_pos,
+                   global_buffer[reading_pos]);
 
-        if(strlen(global_buffer[reading_pos])<L && search_mode == 0){
+        if (strlen(global_buffer[reading_pos]) < L && search_mode == 0) {
             printf("Found line: %s", global_buffer[reading_pos]);
             line_counter++;
         }
-        if(strlen(global_buffer[reading_pos])==L && search_mode == 1){
+        if (strlen(global_buffer[reading_pos]) == L && search_mode == 1) {
             printf("Found line: %s", global_buffer[reading_pos]);
             line_counter++;
         }
-        if(strlen(global_buffer[reading_pos])>L && search_mode == 2){
+        if (strlen(global_buffer[reading_pos]) > L && search_mode == 2) {
             printf("Found line: %s", global_buffer[reading_pos]);
             line_counter++;
         }
@@ -163,10 +165,9 @@ void* ping_start_routine(void* p){
 }
 
 
+int main(int argc, char *argv[]) {
 
-int main(int argc, char* argv[]){
-
-    if (argc!=3){
+    if (argc != 3) {
         printf("Wrong number of arguments!\n");
         return 1;
     }
@@ -179,31 +180,31 @@ int main(int argc, char* argv[]){
     socket_net.sin_addr
 
     //buffer for producers data
-    global_buffer = (char**) malloc(N*sizeof(*global_buffer));
+    global_buffer = (char **) malloc(N * sizeof(*global_buffer));
 
     //open file with data
     file_to_read = fopen(file_name, "r");
-    if(!file_to_read){
+    if (!file_to_read) {
         printf("Cant open %s!", file_name);
         return 1;
     }
 
 
     //init semaphores
-    sem_init(&read_lock,0,1);
-    sem_init(&write_lock,0,1);
+    sem_init(&read_lock, 0, 1);
+    sem_init(&write_lock, 0, 1);
 
-    buffer_lock = (sem_t*) malloc(N*sizeof(*buffer_lock));
-    for(int i=0; i<N; i++){
+    buffer_lock = (sem_t *) malloc(N * sizeof(*buffer_lock));
+    for (int i = 0; i < N; i++) {
         char buf[10];
         sprintf(buf, "/%d_sem", i);
-        sem_init(&buffer_lock[i],0,1);
+        sem_init(&buffer_lock[i], 0, 1);
 
     }
 
     //init condition variables
-    sem_init(&someone_is_reading,0,0);
-    sem_init(&someone_is_reading,0,0);
+    sem_init(&someone_is_reading, 0, 0);
+    sem_init(&someone_is_reading, 0, 0);
 
     end_time = 0;
     line_counter = 0;
@@ -211,39 +212,39 @@ int main(int argc, char* argv[]){
     //nothing is written
     writing_pos = 0;
     reading_pos = 0;
-    for(int i=0; i<N; i++){
+    for (int i = 0; i < N; i++) {
         global_buffer[i] = NULL;
     }
 
     //start producers
-    pthread_t* P_ar = malloc(sizeof(*P_ar)*P);
-    for(int i=0; i<P; i++){
+    pthread_t *P_ar = malloc(sizeof(*P_ar) * P);
+    for (int i = 0; i < P; i++) {
 
         pthread_create(&P_ar[i], NULL, P_start_routine, NULL);
     }
 
     //start consumers
-    pthread_t* C_ar = malloc(sizeof(*C_ar)*K);
-    for(int i=0; i<K; i++){
+    pthread_t *C_ar = malloc(sizeof(*C_ar) * K);
+    for (int i = 0; i < K; i++) {
 
         pthread_create(&C_ar[i], NULL, C_start_routine, NULL);
     }
 
-    if(NK){
+    if (NK) {
         sleep(NK);
-        for(int i=0; i<P; i++){
+        for (int i = 0; i < P; i++) {
             pthread_cancel(P_ar[i]);
         }
-        for(int i=0; i<K; i++){
+        for (int i = 0; i < K; i++) {
             pthread_cancel(C_ar[i]);
         }
         //wait for producers to finish
-        for(int i=0; i<P; i++){
+        for (int i = 0; i < P; i++) {
             pthread_join(P_ar[i], NULL);
         }
 
         //wait for consumers to finish
-        for(int i=0; i<K; i++){
+        for (int i = 0; i < K; i++) {
             pthread_join(C_ar[i], NULL);
         }
         close_sems();
@@ -252,15 +253,14 @@ int main(int argc, char* argv[]){
     }
 
     //wait for producers to finish
-    for(int i=0; i<P; i++){
+    for (int i = 0; i < P; i++) {
         pthread_join(P_ar[i], NULL);
     }
 
     //wait for consumers to finish
-    for(int i=0; i<K; i++){
+    for (int i = 0; i < K; i++) {
         pthread_join(C_ar[i], NULL);
     }
-
 
 
     free(global_buffer);

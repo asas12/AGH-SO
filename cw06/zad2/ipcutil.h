@@ -20,12 +20,12 @@
 int SERVER_STOP;
 int CLIENT_STOP;
 
-struct clientInfo{
+struct clientInfo {
     pid_t pid;
     mqd_t qID;
 };
 
-struct myMsgBuf{
+struct myMsgBuf {
     long mType;
     pid_t pid;
     char msg[MAX_MSG_SIZE];

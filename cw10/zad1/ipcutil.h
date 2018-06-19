@@ -2,10 +2,12 @@
 
 #define MAX_NO_OF_CLIENTS 10
 
-enum operator {ADD, SUB, MUL, DIV};
+enum myoperator {
+    ADD, SUB, MUL, DIV
+};
 
-struct operation{
-    enum operator op;
+struct operation {
+    enum myoperator op;
     int arg1;
     int arg2;
 };
@@ -25,13 +27,13 @@ int SERVER_STOP;
 int CLIENT_STOP;
 
 
-struct myMsgBuf{
+struct myMsgBuf {
     long mType;
     pid_t pid;
     char msg[MAX_MSG_SIZE];
 };
 
-union semun{
+union semun {
     int val;
     struct semid_ds *buf;
     unsigned short *array;

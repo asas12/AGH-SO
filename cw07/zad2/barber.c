@@ -1,5 +1,6 @@
 #define _XOPEN_SOURCE 500
 #define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -17,27 +18,26 @@
 #include <sys/mman.h>
 #include "ipcutil.h"
 
-int stringToInt(char* s){
+int stringToInt(char *s) {
     int result = 0;
-    for(int i=0; i<strlen(s); i++){
-        result*=10;
-        result+=(s[i]-'0');
+    for (int i = 0; i < strlen(s); i++) {
+        result *= 10;
+        result += (s[i] - '0');
     }
     return result;
 }
 
 //resources
 mqd_t msqID;
-sem_t* semID;
-int* shmAddr;
+sem_t *semID;
+int *shmAddr;
 struct timespec tp;
 pid_t myPID;
-sem_t* recMsgSem;
-sem_t* sendMsgSem;
+sem_t *recMsgSem;
+sem_t *sendMsgSem;
 
 
-
-void closeRes(void){
+void closeRes(void) {
     //closing queue
     mq_close(msqID);
     mq_unlink("/queue");
@@ -49,29 +49,29 @@ void closeRes(void){
     sem_unlink("/recSem");
     sem_unlink("/sendSem");
     //closing shm
-    munmap(shmAddr, 3*sizeof(semID)+sizeof(myPID));
+    munmap(shmAddr, 3 * sizeof(semID) + sizeof(myPID));
     shm_unlink("/mem");
 }
 
-void catchSIGINT(int signo){
+void catchSIGINT(int signo) {
     printf("\nOdebrano sygnal SIGINT\n");
-    SERVER_STOP=1;
+    SERVER_STOP = 1;
     closeRes();
     exit(0);
 }
 
-void catchSIGTERM(int signo){
+void catchSIGTERM(int signo) {
     printf("Odebrano sygnal SIGTERM\n");
-    SERVER_STOP=1;
+    SERVER_STOP = 1;
     closeRes();
     exit(0);
 }
 
-void catchSIGUSR1(int signo){
+void catchSIGUSR1(int signo) {
     printf("\nOdebrano sygnal SIGUSR1\n");
 }
 
-void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext){
+void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext) {
     clock_gettime(CLOCK_MONOTONIC, &tp);
     printf("%d.%ld\tI was woken up.\n", (int) tp.tv_sec, tp.tv_nsec);
 
@@ -105,13 +105,12 @@ void catchSIGUSR2(int signo, siginfo_t *info, void *ucontext){
 
 }
 
-int main(int argc, char* argv[]){
+int main(int argc, char *argv[]) {
 
-    if (argc!=2){
+    if (argc != 2) {
         printf("Wrong number of arguments!\n");
         return 1;
     }
-
 
 
     myPID = getpid();
@@ -141,21 +140,24 @@ int main(int argc, char* argv[]){
     semID = sem_open("/sem", O_CREAT | O_EXCL, 0777, 1);
 
     //in clients nums are reversed!!!
-    recMsgSem = sem_open("/recSem",  O_CREAT | O_EXCL, 0777, 0);
+    recMsgSem = sem_open("/recSem", O_CREAT | O_EXCL, 0777, 0);
 
-    sendMsgSem = sem_open("/sendSem",  O_CREAT | O_EXCL, 0777, 0);
-int k;
+    sendMsgSem = sem_open("/sendSem", O_CREAT | O_EXCL, 0777, 0);
+    int k;
 
 //creating shared memory
-    int fd = shm_open("mem",O_CREAT | O_RDWR, 0777);
-    if(fd!=-1){
-        if(ftruncate(fd, 3*sizeof(k)+sizeof(myPID))==0){
-            shmAddr = mmap(NULL, 3*sizeof(k)+sizeof(myPID), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-        }else{
+    int fd = shm_open("mem", O_CREAT | O_RDWR, 0777);
+    if (fd != -1) {
+        if (ftruncate(fd, 3 * sizeof(k) + sizeof(myPID)) == 0) {
+            shmAddr = mmap(NULL, 3 * sizeof(k) + sizeof(myPID), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+        } else {
             printf("err2");
             return 1;
         }
-    }else{printf("err1");return 1;}
+    } else {
+        printf("err1");
+        return 1;
+    }
 
     shmAddr[0] = 1; //awake
     shmAddr[1] = stringToInt(argv[1]);  //queusize
@@ -165,14 +167,14 @@ int k;
 
     struct myMsgBuf recMsg;
 
-    while(1){
+    while (1) {
 
         //lock FIFO and shm
         sem_wait(semID);
 
         //check if anyone is waiting
-        k=mq_receive(msqID,(char*) &recMsg, sizeof(struct myMsgBuf),NULL);
-        if(k>0) {
+        k = mq_receive(msqID, (char *) &recMsg, sizeof(struct myMsgBuf), NULL);
+        if (k > 0) {
             int sig;
 
             //one less client in queue
@@ -217,8 +219,7 @@ int k;
             sem_wait(recMsgSem);
 
 
-        }
-        else{
+        } else {
             //go to sleep - no one in the queue
             clock_gettime(CLOCK_MONOTONIC, &tp);
             printf("%d.%ld\tGoing to sleep.\n", (int) tp.tv_sec, tp.tv_nsec);
@@ -231,8 +232,7 @@ int k;
 
 
             //don't do anything while asleep!
-            while(!shmAddr[0]){
-                ;
+            while (!shmAddr[0]) { ;
             }
 
         }
